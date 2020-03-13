@@ -1,26 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
+import src1 from "./assets/1.jpg";
+import src2 from "./assets/2.jpg";
+import src3 from "./assets/3.jpg";
+import "./index.css"
 
-// const name = '宇威！'
-// let num = 99;
-// setInterval(()=>{
-//     num +=1;
-//     const div = (
-//     <div>{name}报表度：{num}</div>
-//     );
-//     ReactDOM.render(div , document.getElementById('root'));
-// },1000)
+const src = [src1, src2, src3];
+var index = 0;
+var timer;
+const container = document.getElementById('root');
+const start = function(){
+    stop();
+    timer = setInterval(() => {
+        index = ( index + 1) % 3;
+        const image = <img src={src[index]} alt=""/>
+        ReactDOM.render(image, container);
+    },2000)
+}  
+const stop = function(){
+    clearInterval(timer);
+}
 
-// console.log(div.props.children); // 宇威！
+container.onmouseenter = function(){
+    stop();
+}
+container.onmouseleave = function(){
+    start();
+}
 
-// 一下修改则会报错。不可以修改只读属性。如需修改则需要重新赋值
-// div.props.children = '很帅！';
-
-
-// Object.freeze(obj) 冻结对象。
-let obj = {"name" : "宇威", set : 18}
-console.log(obj)
-obj.set = 21;
-console.log(obj)
-Object.freeze(obj)
-console.log(obj)
+start();
