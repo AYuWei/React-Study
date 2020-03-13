@@ -1,161 +1,61 @@
-### JSX
+### 组件和组件属性
 
-**什么是JSX**
+组件：包含内容，样式和功能的UI单元。
 
-- Facebook起草的JS扩展语法。
+插件：包含行为样式结构的功能模块，能在页面中单独使用。
 
-- 本质是一个JS对象，会被babel编译，最终会被妆花为React.crteateElement,最好用（）括起来，js表达式。
+模块：模块是将某一特定的元素封装起来，行为和样式的单元功能。
 
-- 每个JSX表达式，有且仅有一个根节点。
-    - React.Fragment 为一个空的节点。
+**创建一个组件**
 
-- 每个JSX元素必须结束。（XML规范）
+**特别注意：组件的名称首字母必须大写**
 
-**在JSX中嵌入式表达式 {}**
+不大写会当成html元素执行。
 
-- 将JSX中使用注释。{}
+1. 函数组件： 返回一个React元素
 
-- 将表达式作为内容的一部分。
-    - null、undefined、false不会显示。
-    - 普通对象、不可以作为子元素。
-    - 可以放置React元素对象。
+2. 类组件：必须继承React.Component,、必须提供render函数，用于渲染组件。
 
-- 将表达式作为元素的属性。`{{}}`第一个`{}`为JSX对象，第二个`{}`为js对象。
+**组件的属性**
 
-- 属性使用小驼峰命名法**如写class类名的时候：className='p' === class='p'**
+1. 对函数组件，属性会作为一个对象的属性，传递给函数的参数。
 
-- 防止注入攻击
-    - 自动编译。
-    - dangerouslySetInnerHTML
+2. 对于类组件，属性会作为一个对象的属性，传递给构造函数的参数。
 
-**属性不可变性**
+注意：组件的书写，应该使用小驼峰命名法。
 
-- 虽然JSX元素是一个对象，但是该对象中的所有属性不可更改
+**组件无法改变自身的属性**
 
-- 如果确实需要更改元素的属性，需要重新创建JSX元素。
+之前学习的React元素，本质上就是一个组件（内置组件）
 
-**就和设置了ES6中的Object.freeze(obj)一样。**
+React中的哲学：数据属于谁，谁才有权修改。
 
----------------------------
-**JSX本质是一个对象**
+React中的数据：自顶而下流动。
 
+----------------------------------
+
+**函数组件的调用区别**
 ```js
-    const span = (<span>我是一个span标签！</span>)
+import MyFunction from "./myFunc_component.js";
+import MyClass from "./myClass_component.js";
 
-    const h3 = (React.createElement("h3" , {type : 'classh3'},'this is h3', span));
+// 执行函数组件
+// ReactDOM.render(MyFunction(), document.getElementById('root'));
 
-    console.log(typeof h3) ; // object
-    console.log(typeof span); // object
-
-    ReactDOM.render(h3, document.getElementById('root'));
-
-```
-------------------------------
-
-**仅又一个根节点**
-
-```js
-const div1 = (
-    // 必须要使用父级包裹
+// 或者这样执行
+ReactDOM.render((
     <div>
-        <h2>我是h2标题</h2>
-        <p>this is p</p>
+        <MyFunction />
+        {MyFunction()}
+        <MyClass />
     </div>
-)
+), document.getElementById('root'));
 
-const div2 = (
-    // 要是不想有父级，因为加上父级可能会更改元素结构和样式，我们可以给一个空的父级
-    // <>本质是<React.Fragment>
-    <>
-        <h2>我是h2标题！</h2>
-        <p>我是P标签！</p>
-    </>
-)
-
-ReactDOM.render(div2 , document.getElementById('root'));
 ```
+用函数执行的方式调用函数组件，在页面虽然看不出什么区别，但是在浏览器扩展应用程序React中可以看到，函数用`<MyFuntion />`形式调用的话会在React结构中显示出这个组件的名，用函数调用则不会显示。
 
--------------------------
+----------------------------------------
 
-**嵌入式表达式{}**
+函数中传递属性：直接书写，然后在组件中函数传递参数传进去。
 
-```js
-const a = 123, b = 456;
-
-const obj = { "name" : 'yuwei', "sex" : 18 } ; // 不可以传递普通对象
-
-// 实现 123 + 456 = 123*456
-const p1 = (<p>{a} + {b} = { a * b }</p>) ; //123 + 456 = 56088
-
-const p2 = (
-    <>
-        {/* 下面语句不会输出任何内容！ */}
-        <p>{ null }</p>
-        <p>{ undefined }</p>
-        <p>{ false }</p>
-        <p>{ true }</p>
-    </>
-)
-
-const number = new Array(30);
-number.fill(1);
-const arrList = number.map((ele,i) => <li key={ele + '_' + i}>{ i }</li>)
-
-const ul = <ul>{ arrList }</ul>
-
-const div = React.createElement('div',{}, p1, p2,ul);
-
-ReactDOM.render(div , document.getElementById('root'));
-```
-
-在遍历的时候需要添加key值，key不像是在`:key=""`，而是`key={}`
-
------------------------------------------
-
-**表达式作为元素属性,小驼峰命名，防止注入攻击！**
-
-```js
-const O_img = 'O_img';
-
-const span = "<span>我是一个span元素！</span>"
-
-const div = (
-    <>      
-            {/* 表达式作为元素的属性 */}
-            <img type={O_img} style={{width:'200px', 'marginLeft':"200px"}} src="http://img3.imgtn.bdimg.com/it/u=1845113465,3148013960&fm=26&gp=0.jpg" alt=""/>
-            
-            {/* 属性使用小驼峰命名 */}
-            <p className='p'>hello! 我是路飞</p>
-           
-            {/* 防止注入攻击 --> 则 p 标签内显示<span>我是一个span元素！</span>元素 */}
-            <p> { span } </p>
-            
-            {/* 防止注入攻击 --> 但是知道是html元素也想让显示在页面中 */}
-            <p dangerouslySetInnerHTML={{
-                __html : span
-            }}></p>
-    </>
-)
-
-ReactDOM.render(div , document.getElementById('root'));
-```
-
----------------------------
-
-**属性不可变性**
-```js
-const name = '宇威！'
-let num = 99;
-setInterval(()=>{
-    num +=1;
-    const div = (
-    <div>{name}报表度：{num}</div>
-    );
-    ReactDOM.render(div , document.getElementById('root'));
-},1000)
-
-// console.log(div.props.children); // 宇威！
-
-// 一下修改则会报错。不可以修改只读属性。如需修改则需要重新赋值
-// div.props.children = '很帅！';
-```
+类中传递属性：直接书写，然后在类中的propt中,这样使用this.props['属性名']

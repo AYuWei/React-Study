@@ -1,31 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import src1 from "./assets/1.jpg";
-import src2 from "./assets/2.jpg";
-import src3 from "./assets/3.jpg";
-import "./index.css"
+import MyFunction from "./myFunc_component.js";
+import MyClass from "./myClass_component.js";
 
-const src = [src1, src2, src3];
-var index = 0;
-var timer;
-const container = document.getElementById('root');
-const start = function(){
-    stop();
-    timer = setInterval(() => {
-        index = ( index + 1) % 3;
-        const image = <img src={src[index]} alt=""/>
-        ReactDOM.render(image, container);
-    },2000)
-}  
-const stop = function(){
-    clearInterval(timer);
-}
+// const func = MyFunction({number:4}); // 传递属性
+const func = <MyFunction number="3"/>
+console.log(func); // type = MyFunction , Props : {number : 3}
 
-container.onmouseenter = function(){
-    stop();
-}
-container.onmouseleave = function(){
-    start();
-}
+// 或者这样执行
+ReactDOM.render((
+    <div>
+        <MyFunction number="3"/>
+        <MyFunction obj={{name : "张三", sex : 21}} number="44"/>
+        <MyFunction number="3"/>
+        <MyClass number={4}/>
 
-start();
+    </div>
+), document.getElementById('root'));
