@@ -1,68 +1,70 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### React概述
 
-## Available Scripts
+**什么是React？**
 
-In the project directory, you can run:
+React是由Facebook研发的、由于**决定UI复杂度**的开源JavaScript库、目前由React联合社区维护。
 
-### `npm start`
+> 它不是框架，只是为了解决UI复杂度而诞生的一个库。
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+框架的特点：就是侵入性强，限制了你写代码的语法。
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+React不是框架，所以侵入性弱，可以很好的结合第三方库使用。
 
-### `npm test`
+**React特点**
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. 轻量：React的开发版本有源码（包含注释）仅3000多行。
 
-### `npm run build`
+2. 原生：所有的React的代码都是用原生的JS书写而成的，不依赖其他任何库。
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. 易扩展：React对代码的封装程度较低，也没有过多的使用魔法（如defineportey）。所以React中的很多功能都可以扩展。
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+4. 不依赖宿主环境：React只依赖原生JS语言，不依赖任何其他的东西，包括运行环境，因此他可以被轻松的移植到游览器，桌面应用，移动端。
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. 渐进式：React并非框架，对整个工程没有强制的约束力，这对于那些已存在的工程，可以逐步的将其改造为React，二不是需要全盘覆盖重写。
 
-### `npm run eject`
+6. 单项数据流：所有的数据自顶而下的流动。
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+7. 用JS代码声明界面。
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+8. 组件化。
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+**对比vue**
 
-## Learn More
+| 对比项     |	Vue     | React |
+| :------:  | :-------:|:------:|
+| 全球使用量 | 	        | ✔
+| 国内使用量 | 	✔	    |       |  
+| 性能       | 	✔       | 	✔  | 
+| 易上手	 | ✔	    |          | 
+| 灵活度	 | 	        | ✔     | 
+| 大型企业	 | 	         | ✔    | 
+| 中小型企业 | 	✔	 |  | 
+| 生态	     |  | 	✔ | 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Hello World 
 
-### Code Splitting
+直接在页面上使用React，引用下面的代码。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+```js
+// React的核心库，与宿主环境无关。
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+// 依赖核心库，将核心的功能与页面结合。
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+// 编译JSX
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+```
 
-### Analyzing the Bundle Size
+**React.createElement**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+创建一个React元素，称作虚拟DOM，本质上是一个普通的对象。
+1. 参数1：元素类型，如果是字符串，是一个普通的HTML元素。
 
-### Making a Progressive Web App
+2. 参数2：元素的属性，一个对象。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+3. 参数3：后续参数，元素的子节点。
 
-### Advanced Configuration
+**JSX**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+JS的扩展语法，需要使用babel进行转义。

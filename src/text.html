@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="React"></div>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script>
+        // 创建span元素
+        var span = React.createElement('span',{},"我是一个span元素！")
+        // 创建h1元素
+        var h1 = React.createElement("h1",{},'一个h1元素！', span);
+        ReactDOM.render(h1, document.getElementById('React'));
+    </script>
+</body>
+</html>
