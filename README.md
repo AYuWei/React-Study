@@ -1,70 +1,106 @@
-在学生列表当中，获取的数据为Response对象，需要装换为json()格式才能看到请求后来的数据.
+### 组件状态
 
-如：最终获取数据
+组件状态：组件可以自行维护数据。
+
+组件状态仅在类组件中有效。
+
+状态（state）, 本质上是类组件的一个属性，是一个对象。
+
+**状态初始化**
+> 在构造函数中初始化，或者在类中直接初始化
 ```js
-const jsonlist = fetch("http://api.duyiedu.com/api/student/findAll?appkey=15728238198_1569593310259")
-                    .then(ele => ele.json() )
-                        .then(ele => console.log(ele));
+state = {},
+// 或者
+constructor(props){
+  super(props);
+  this.state = {
+
+  }
+}
 ```
 
-# 基本使用
+**状态的变化**
 
-> 请求测试地址：http://101.132.72.36:5100/api/local
+不能直接改变状态：因为React无法监控到状态发生了变化。
 
-使用 ```fetch```函数即可立即向服务器发送网络请求
+必须使用`this.setState({})`改变状态
 
-## 参数
+一旦调用了`this.setState`会导致当前组件重新渲染。
 
-该函数有两个参数：
+**组件中的数据**
 
-1. 必填，字符串，请求地址
-2. 选填，对象配置请求
+1. props:该数据是由组件的使用者传递的数据，所有权不数据组件本省，因此组件无法改变该数据。
 
-**请求配置对象**
+2. state: 该数据是有组件自身创建的，所有权属于组件自身，因此组件有权改变该数据。
 
-- method: 字符串，请求方法，默认值GET
-- headers: 对象，请求头信息
-- body: 请求的内容，必须匹配请求头中的Content-Type
-- mode：字符串，请求模式
-  - cors：默认值，配置为该值，会在请求头中加入 origin 和 referer
-  - no-cors：配置为该值，不会在请求头中加入 origin 和 referer，跨域的时候可能会出现问题
-  - same-origin：指示请求必须在同一个域中发生，如果请求其他域，则会报错
-- credentials: 如何携带凭据（cookie）
-  - omit：默认值，不携带cookie
-  - same-origin：请求同源地址时携带cookie
-  - include：请求任何地址都携带cookie
-- cache：配置缓存模式
-  - default: 表示fetch请求之前将检查下http的缓存.
-  - no-store: 表示fetch请求将完全忽略http缓存的存在. 这意味着请求之前将不再检查下http的缓存, 拿到响应后, 它也不会更新http缓存.
-  - no-cache: 如果存在缓存, 那么fetch将发送一个条件查询request和一个正常的request, 拿到响应后, 它会更新http缓存.
-  - reload: 表示fetch请求之前将忽略http缓存的存在, 但是请求拿到响应后, 它将主动更新http缓存.
-  - force-cache: 表示fetch请求不顾一切的依赖缓存, 即使缓存过期了, 它依然从缓存中读取. 除非没有任何缓存, 那么它将发送一个正常的request.
-  - only-if-cached: 表示fetch请求不顾一切的依赖缓存, 即使缓存过期了, 它依然从缓存中读取. 如果没有缓存, 它将抛出网络错误(该设置只在mode为”same-origin”时有效).
+> 组件中传递过来的数据我们值改不了的，给冻住了的Object.freeze(obj)
 
-## 返回值
+> 则我们需要再组件内拥有该数据，且可以改动的，我们需要再组件状态中设置。
 
-fetch 函数返回一个 Promise 对象
+-----------------------------------
 
-- 当收到服务器的返回结果后，Promise 进入resolved状态，状态数据为 Response 对象
-- 当网络发生错误（或其他导致无法完成交互的错误）时，Promise 进入 rejected 状态，状态数据为错误信息
+index.js
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+import Tick from "./components/Tick.js"
 
-**Response对象**
+var number = 10;
 
-- ok：boolean，当响应消息码在200~299之间时为true，其他为false
-- status：number，响应的状态码
-- text()：用于处理文本格式的 Ajax 响应。它从响应中获取文本流，将其读完，然后返回一个被解决为 string 对象的 Promise。
-- blob()：用于处理二进制文件格式（比如图片或者电子表格）的 Ajax 响应。它读取文件的原始数据，一旦读取完整个文件，就返回一个被解决为 blob 对象的 Promise。
-- json()：用于处理 JSON 格式的 Ajax 的响应。它将 JSON 数据流转换为一个被解决为 JavaScript 对象的promise。
-- redirect()：可以用于重定向到另一个 URL。它会创建一个新的 Promise，以解决来自重定向的 URL 的响应。
+// 以前的计时器：但是不合理，这应该是计时器里面做的，不应该父级做，则只能使用组件状态。
+
+// const timer = setInterval(() => {
+//     number -= 1;
+//     ReactDOM.render((
+//         <Tick number={ number }/>
+//     ), document.getElementById('root'));  
+//     if(number <= 0){
+//         clearInterval(timer)
+//     }  
+// }, 1000)
+
+ReactDOM.render((
+    <Tick number="10"/>
+), document.getElementById('root'));
+
+```
+
+------------------------------------
+
+Tick.js
+
+设置组件状态时候可以在constructor中书写state,或者在对象组件中直接书写。
 
 ```js
- async function getProvinces(){
-        const url = "http://101.132.72.36:5100/api/local";
-        const resp = await fetch(url);
-        const result = await resp.json();
-        console.log(result);
+import React from "react";
+
+export default class Tick extends React.Component{
+
+     state = {
+        number : this.props.number
     }
-    document.querySelect('button').onclick function(){
-        getProvinces();
+
+    constructor(props){
+        super(props);
+
+        // this.state = {
+        //     number : this.props.number
+        // }
+
+        this.timer = setInterval(()=>{
+            this.setState({
+                number : this.state.number - 1
+            })
+            if(this.state.number <= 0){
+                clearInterval(this.timer)
+            }
+        }, 1000)
     }
-``` 
+
+    render(){
+        return (
+            <h2>计时器：{this.state.number}</h2>
+        )
+    }
+}
+```

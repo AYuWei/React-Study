@@ -1,23 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Studentlist from "./components/StudentList"
+import Tick from "./components/Tick.js"
 
-async function fetchAll(){
-    var stus =await fetch("http://api.duyiedu.com/api/student/findAll?appkey=15728238198_1569593310259")
-                    .then(ele => ele.json())
-                        .then(ele => ele.data)
-    return stus;
-}
+var number = 10;
 
-const jsonlist = fetch("http://api.duyiedu.com/api/student/findAll?appkey=15728238198_1569593310259")
-                    .then(ele => ele.json() )
-                        .then(ele => console.log(ele));
+// 以前的计时器：但是不合理，这应该是计时器里面做的，不应该父级做，则只能使用组件状态。
 
-async function render(){
-    ReactDOM.render("正在加载中....", document.getElementById('root'));
-    const stulist = await fetchAll();
-    ReactDOM.render((<Studentlist stus={stulist}/>), document.getElementById('root'));
-}
-render();
+// const timer = setInterval(() => {
+//     number -= 1;
+//     ReactDOM.render((
+//         <Tick number={ number }/>
+//     ), document.getElementById('root'));  
+//     if(number <= 0){
+//         clearInterval(timer)
+//     }  
+// }, 1000)
 
-
+ReactDOM.render((
+    <Tick number="10"/>
+), document.getElementById('root'));
