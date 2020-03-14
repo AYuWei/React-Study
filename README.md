@@ -1,61 +1,70 @@
-### 组件和组件属性
+在学生列表当中，获取的数据为Response对象，需要装换为json()格式才能看到请求后来的数据.
 
-组件：包含内容，样式和功能的UI单元。
-
-插件：包含行为样式结构的功能模块，能在页面中单独使用。
-
-模块：模块是将某一特定的元素封装起来，行为和样式的单元功能。
-
-**创建一个组件**
-
-**特别注意：组件的名称首字母必须大写**
-
-不大写会当成html元素执行。
-
-1. 函数组件： 返回一个React元素
-
-2. 类组件：必须继承React.Component,、必须提供render函数，用于渲染组件。
-
-**组件的属性**
-
-1. 对函数组件，属性会作为一个对象的属性，传递给函数的参数。
-
-2. 对于类组件，属性会作为一个对象的属性，传递给构造函数的参数。
-
-注意：组件的书写，应该使用小驼峰命名法。
-
-**组件无法改变自身的属性**
-
-之前学习的React元素，本质上就是一个组件（内置组件）
-
-React中的哲学：数据属于谁，谁才有权修改。
-
-React中的数据：自顶而下流动。
-
-----------------------------------
-
-**函数组件的调用区别**
+如：最终获取数据
 ```js
-import MyFunction from "./myFunc_component.js";
-import MyClass from "./myClass_component.js";
-
-// 执行函数组件
-// ReactDOM.render(MyFunction(), document.getElementById('root'));
-
-// 或者这样执行
-ReactDOM.render((
-    <div>
-        <MyFunction />
-        {MyFunction()}
-        <MyClass />
-    </div>
-), document.getElementById('root'));
-
+const jsonlist = fetch("http://api.duyiedu.com/api/student/findAll?appkey=15728238198_1569593310259")
+                    .then(ele => ele.json() )
+                        .then(ele => console.log(ele));
 ```
-用函数执行的方式调用函数组件，在页面虽然看不出什么区别，但是在浏览器扩展应用程序React中可以看到，函数用`<MyFuntion />`形式调用的话会在React结构中显示出这个组件的名，用函数调用则不会显示。
 
-----------------------------------------
+# 基本使用
 
-函数中传递属性：直接书写，然后在组件中函数传递参数传进去。
+> 请求测试地址：http://101.132.72.36:5100/api/local
 
-类中传递属性：直接书写，然后在类中的propt中,这样使用this.props['属性名']
+使用 ```fetch```函数即可立即向服务器发送网络请求
+
+## 参数
+
+该函数有两个参数：
+
+1. 必填，字符串，请求地址
+2. 选填，对象配置请求
+
+**请求配置对象**
+
+- method: 字符串，请求方法，默认值GET
+- headers: 对象，请求头信息
+- body: 请求的内容，必须匹配请求头中的Content-Type
+- mode：字符串，请求模式
+  - cors：默认值，配置为该值，会在请求头中加入 origin 和 referer
+  - no-cors：配置为该值，不会在请求头中加入 origin 和 referer，跨域的时候可能会出现问题
+  - same-origin：指示请求必须在同一个域中发生，如果请求其他域，则会报错
+- credentials: 如何携带凭据（cookie）
+  - omit：默认值，不携带cookie
+  - same-origin：请求同源地址时携带cookie
+  - include：请求任何地址都携带cookie
+- cache：配置缓存模式
+  - default: 表示fetch请求之前将检查下http的缓存.
+  - no-store: 表示fetch请求将完全忽略http缓存的存在. 这意味着请求之前将不再检查下http的缓存, 拿到响应后, 它也不会更新http缓存.
+  - no-cache: 如果存在缓存, 那么fetch将发送一个条件查询request和一个正常的request, 拿到响应后, 它会更新http缓存.
+  - reload: 表示fetch请求之前将忽略http缓存的存在, 但是请求拿到响应后, 它将主动更新http缓存.
+  - force-cache: 表示fetch请求不顾一切的依赖缓存, 即使缓存过期了, 它依然从缓存中读取. 除非没有任何缓存, 那么它将发送一个正常的request.
+  - only-if-cached: 表示fetch请求不顾一切的依赖缓存, 即使缓存过期了, 它依然从缓存中读取. 如果没有缓存, 它将抛出网络错误(该设置只在mode为”same-origin”时有效).
+
+## 返回值
+
+fetch 函数返回一个 Promise 对象
+
+- 当收到服务器的返回结果后，Promise 进入resolved状态，状态数据为 Response 对象
+- 当网络发生错误（或其他导致无法完成交互的错误）时，Promise 进入 rejected 状态，状态数据为错误信息
+
+**Response对象**
+
+- ok：boolean，当响应消息码在200~299之间时为true，其他为false
+- status：number，响应的状态码
+- text()：用于处理文本格式的 Ajax 响应。它从响应中获取文本流，将其读完，然后返回一个被解决为 string 对象的 Promise。
+- blob()：用于处理二进制文件格式（比如图片或者电子表格）的 Ajax 响应。它读取文件的原始数据，一旦读取完整个文件，就返回一个被解决为 blob 对象的 Promise。
+- json()：用于处理 JSON 格式的 Ajax 的响应。它将 JSON 数据流转换为一个被解决为 JavaScript 对象的promise。
+- redirect()：可以用于重定向到另一个 URL。它会创建一个新的 Promise，以解决来自重定向的 URL 的响应。
+
+```js
+ async function getProvinces(){
+        const url = "http://101.132.72.36:5100/api/local";
+        const resp = await fetch(url);
+        const result = await resp.json();
+        console.log(result);
+    }
+    document.querySelect('button').onclick function(){
+        getProvinces();
+    }
+``` 

@@ -1,19 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import MyFunction from "./myFunc_component.js";
-import MyClass from "./myClass_component.js";
+import Studentlist from "./components/StudentList"
 
-// const func = MyFunction({number:4}); // 传递属性
-const func = <MyFunction number="3"/>
-console.log(func); // type = MyFunction , Props : {number : 3}
+async function fetchAll(){
+    var stus =await fetch("http://api.duyiedu.com/api/student/findAll?appkey=15728238198_1569593310259")
+                    .then(ele => ele.json())
+                        .then(ele => ele.data)
+    return stus;
+}
 
-// 或者这样执行
-ReactDOM.render((
-    <div>
-        <MyFunction number="3"/>
-        <MyFunction obj={{name : "张三", sex : 21}} number="44"/>
-        <MyFunction number="3"/>
-        <MyClass number={4}/>
+const jsonlist = fetch("http://api.duyiedu.com/api/student/findAll?appkey=15728238198_1569593310259")
+                    .then(ele => ele.json() )
+                        .then(ele => console.log(ele));
 
-    </div>
-), document.getElementById('root'));
+async function render(){
+    ReactDOM.render("正在加载中....", document.getElementById('root'));
+    const stulist = await fetchAll();
+    ReactDOM.render((<Studentlist stus={stulist}/>), document.getElementById('root'));
+}
+render();
+
+
