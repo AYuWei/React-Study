@@ -1,105 +1,130 @@
-### 组件状态
+### 事件
 
-组件状态：组件可以自行维护数据。
+在React中，组件的事件，本质上就是一个属性。
 
-组件状态仅在类组件中有效。
+按照之前React对组件的约定，由事件本质上是一个属性，因此也需要使用小驼峰命名法。
 
-状态（state）, 本质上是类组件的一个属性，是一个对象。
+**如果没有特殊处理，在事件处理函数中，this指向undefined**是在自定义组件的时候要规定this指向。
 
-**状态初始化**
-> 在构造函数中初始化，或者在类中直接初始化
+内置组件不会有this指向问题。什么是内置组件呢？就是在组件内直接使用`<h1 onClick=""></h1>`让babel解析。
+
+1. 使用bind函数、绑定this。
+
+2. 使用箭头函数。
+
+------------------------------------------------------------
+
+**内置组件使用事件**
 ```js
-state = {},
-// 或者
-constructor(props){
-  super(props);
-  this.state = {
-
-  }
+function changeClickButton(){
+    console.log('Button被点击了！');
 }
+function changeClickH1(){
+    console.log("H1被点击了！")
+}
+
+ReactDOM.render(( <>
+        <button onClick={changeClickButton}>点击</button>
+        <h1 onClick={changeClickH1}>点击我是H1</h1>
+    </> ), document.getElementById('root'))
 ```
 
-**状态的变化**
-
-不能直接改变状态：因为React无法监控到状态发生了变化。
-
-必须使用`this.setState({})`改变状态
-
-一旦调用了`this.setState`会导致当前组件重新渲染。
-
-**组件中的数据**
-
-1. props:该数据是由组件的使用者传递的数据，所有权不数据组件本省，因此组件无法改变该数据。
-
-2. state: 该数据是有组件自身创建的，所有权属于组件自身，因此组件有权改变该数据。
-
-> 组件中传递过来的数据我们值改不了的，给冻住了的Object.freeze(obj)
-
-> 则我们需要再组件内拥有该数据，且可以改动的，我们需要再组件状态中设置。
-
------------------------------------
-
-index.js
+----------------------------------------------------------
+**父组件传递事件给子组件，就当做属性来用就好了。不存在this问题。**
 ```js
-import React from "react";
-import ReactDOM from "react-dom";
-import Tick from "./components/Tick.js"
+// index.js
+import Change from "./components/Change.js";
 
-var number = 10;
+function changeClick(){
+    console.log("我是index.js文件")
+}
 
-// 以前的计时器：但是不合理，这应该是计时器里面做的，不应该父级做，则只能使用组件状态。
-
-// const timer = setInterval(() => {
-//     number -= 1;
-//     ReactDOM.render((
-//         <Tick number={ number }/>
-//     ), document.getElementById('root'));  
-//     if(number <= 0){
-//         clearInterval(timer)
-//     }  
-// }, 1000)
-
-ReactDOM.render((
-    <Tick number="10"/>
-), document.getElementById('root'));
-
+ReactDOM.render(<Change onClick={changeClick}/> , document.getElementById('root'))
 ```
-
-------------------------------------
-
-Tick.js
-
-设置组件状态时候可以在constructor中书写state,或者在对象组件中直接书写。
-
 ```js
-import React from "react";
+// change.js
+import React from 'react';
 
-export default class Tick extends React.Component{
+export default class changeClick extends React.Component{
 
-     state = {
-        number : this.props.number
+    state = {
+        number : 3
     }
-
     constructor(props){
         super(props);
-
-        // this.state = {
-        //     number : this.props.number
-        // }
-
-        this.timer = setInterval(()=>{
+        
+        this.timer = setInterval(() => {
             this.setState({
-                number : this.state.number - 1
+                number : this.state.number -1
             })
-            if(this.state.number <= 0){
-                clearInterval(this.timer)
+            if(this.state.number === 0){
+                clearInterval(this.timer);
+                // 然后执行父级事件
+                this.props.onClick();
             }
-        }, 1000)
+        },1000)
     }
 
     render(){
+        console.log(this)
         return (
-            <h2>计时器：{this.state.number}</h2>
+            <>
+                <h3>计时器 { this.state.number }</h3>
+                <button onClick={this.props.onClick}>按钮</button>
+            </>
+        )
+    }
+}
+```
+
+----------------------------------------------------------
+
+**而组件内使用组件才存在this指向问题。**
+```js
+import React from 'react';
+
+export default class changeClick extends React.Component{
+
+    state = {
+        number : 10
+    }
+    // 没绑定this
+    TickClick(){
+        console.log(this); // undefined
+        console.log("开始倒计时！")    
+    }
+    // 使用箭头函数绑定this
+    over = () =>{
+        console.log(this);  // changeClick
+    }
+    // 用bind绑定this
+    out(){
+        console.log('out',this)  // changeClick
+    }
+    constructor(props){
+        super(props);
+        this.timer = setInterval(() => {
+            this.setState({
+                number : this.state.number -1
+            })
+            if(this.state.number === 0){
+                clearInterval(this.timer)
+            }
+        }, 1000);
+        
+    }
+
+    render(){
+        let StringName = '正在倒计时！';
+        if(this.state.number === 0){
+            StringName = "倒计时结束！";
+        }
+        return (
+            <div>
+                <button onClick={this.TickClick} onMouseOver={this.over} onMouseOut={this.out.bind(this)}>开始倒计时</button>
+                <h1>倒计时：{this.state.number}</h1>
+                <h3>{ StringName }</h3>
+            </div>
         )
     }
 }
