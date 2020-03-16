@@ -1,5 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ComTest from "./ComTest.js";
+// import OldLift from "./OldLift.js"
+import NewLift from "./NewLift.js"
 
-ReactDOM.render(<ComTest/> , document.getElementById('root'))
+
+ReactDOM.render(<>
+    <NewLift/>
+</> , document.getElementById('root'))
