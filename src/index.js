@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import OldLift from "./OldLift.js"
-import NewLift from "./NewLift.js"
-
+import Test from "./common/Test.js"
 
 ReactDOM.render(<>
-    <NewLift/>
+    <div style={{color:"red"}}>我是父组件！</div>
+    <Test>
+    </Test>
 </> , document.getElementById('root'))
