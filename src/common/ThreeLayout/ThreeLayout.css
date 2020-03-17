@@ -1,0 +1,18 @@
+.threelayout{
+    display: flex;
+
+}
+.threelayout .main{
+    /* 自动增长 */
+   flex: 1 1 auto; 
+    order: 2;
+    border: 1px solid red;
+}
+.threelayout .left{
+    order: 1;
+    border: 1px solid #123456;
+}
+.threelayout .right{
+    order: 3;
+    border: 1px solid #123456;
+}

@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Test from "./common/Test.js"
+// import AppThreeLayout from "./common/AppThreeLayout.js"
+import AppTwo from "./common/AppTwo.js"
 
 ReactDOM.render(<>
-    <div style={{color:"red"}}>我是父组件！</div>
-    <Test>
-    </Test>
+    <AppTwo />    
 </> , document.getElementById('root'))

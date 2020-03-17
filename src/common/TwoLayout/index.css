@@ -1,0 +1,13 @@
+.twolayout{
+    display: flex;
+}
+.twolayout .left{
+    flex: 1;
+    order: 1;
+    border: 1px solid #123456;
+}
+.twolayout .right{
+    flex: 1;
+    order: 3;
+    border: 1px solid #123456;
+}
