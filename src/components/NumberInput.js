@@ -1,40 +1,3 @@
-### 表单 
-
-受控组件和非受控组件
-
-受控组件：组件的使用者，有能力完全控制该组件的行为和内容。通常情况下受控组件往往没有自身的状态，其内容完全受到属性的控制。
-
-非受控组件：组件的使用者，没有能力控制该组件的行为和内容，组件的行为和内容完全自行控制。
-
-表单组件：默认情况下是非受控组件，一旦设置了表单组件的value属性，则其变为受控组件（单选和对选需要设置checked）
-
----------------------------------------------
-设置了value属性还需添加onChange事件
-```js
-export default class NumberInput extends Component {
-    state = {
-        val : '',
-    }
-    henderChange =(e)=>{
-        var text = e.target.value;
-        this.setState({
-            val : text
-        })
-    }
-    render() {
-        return (
-            <div>
-                <input type="text"  value={this.state.val} onChange={this.henderChange}></input>
-                <button onClick={()=>{
-                    console.log(this.state)
-                }}>获取state内容</button>
-            </div>
-        )
-    }
-}
-```
-
-```js
 import React, { Component } from 'react'
 
 export default class NumberInput extends Component {
@@ -121,5 +84,3 @@ export default class NumberInput extends Component {
         )
     }
 }
-
-```

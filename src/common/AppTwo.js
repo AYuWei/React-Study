@@ -1,4 +1,4 @@
-import React from "react"
+import React from "./node_modules/react"
 import TwoLayout from "./TwoLayout"
 
 export default class AppThreeLayout extends React.Component{

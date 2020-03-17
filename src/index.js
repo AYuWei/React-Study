@@ -1,8 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import AppThreeLayout from "./common/AppThreeLayout.js"
-import AppTwo from "./common/AppTwo.js"
+import NumberImput from "./components/NumberInput.js"
 
 ReactDOM.render(<>
-    <AppTwo />    
+    <NumberImput />    
 </> , document.getElementById('root'))
