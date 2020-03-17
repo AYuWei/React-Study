@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import NumberImput from "./components/NumberInput.js"
-
+import CheckBox from "./components/common/CheckBoxGroup/Test.js"
+import Select from "./components/common/Select/Test.js"
+import Radio from "./components/common/RadioBoxGroup/Test.js"
 ReactDOM.render(<>
-    <NumberImput />    
+    <Select />  
+    <CheckBox/>  
+    <Radio/>
 </> , document.getElementById('root'))
