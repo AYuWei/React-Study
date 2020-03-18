@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from "prop-types"
 
+// 属性类型的约束
+
 export class A{
 
 }
