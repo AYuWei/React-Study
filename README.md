@@ -25,3 +25,78 @@ HOC：Higher-Order Component 高阶组件，一组件作为参数，并返回一
 -----------------------------------------------------------
 
 举个栗子，以上面栗子为例，写两个组件A ， B 组件干自己的事情，而另外给这个组件添加创建时和销毁时的状态。
+
+App.js
+```js
+import React, { Component } from 'react'
+import {A, B} from "./components/common/Comps.js"
+import withLog from "./components/HOC/withLog.js"
+import withLogin from "./components/HOC/withLogin.js"
+
+
+let WithA = withLogin(A);
+let WithB = withLogin(B);
+WithA = withLog(WithA)
+WithB = withLog(WithB)
+
+
+
+export default class App extends Component {
+    state = {}
+
+    render() {
+        return (
+           <>
+                <WithA name="11" isLogin/>
+                <WithB name="22"/>
+                <button onClick={()=>{
+                    this.setState({
+                        n : 1
+                    })
+                }}>属性</button>
+           </>
+        )
+    }
+}
+
+```
+
+--------------------------------------
+withLog.js
+```js
+import React from 'react'
+
+export default function withLog(Comp) {
+    return class LogWrapper extends React.Component{
+        componentDidMount(){
+            console.log(`日志：${Comp.name}组件，被创建了${Date.now()}`)
+        }
+        componentWillUnmount(){
+            console.log(`日志：${Comp.name}组件，被销毁！`)
+        }
+        render(){
+            return (<>
+                    <Comp {...this.props}/>
+                </>)
+        }
+    }
+}
+
+```
+-------------------------------
+withLogin验证登陆
+```js
+import React from 'react'
+
+export default function withLogin(Comp) {
+    return class Login extends React.Component{
+        render(){
+            if(this.props.isLogin){
+                return <Comp {...this.props}/>
+            }
+            return null;
+        }
+    }
+}
+
+```
