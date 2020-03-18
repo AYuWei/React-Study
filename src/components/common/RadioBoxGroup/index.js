@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from "prop-types"
+import utils from "./../../util"
 
 export default function RadioBoxGroup(props) {
     const handleChange = (e) => {
@@ -26,4 +28,10 @@ export default function RadioBoxGroup(props) {
             {bs}
         </div>
     )
+}
+
+RadioBoxGroup.propTypes = {
+    datas : utils.groupDatas,
+    name : PropTypes.string,
+    value : PropTypes.string,
 }

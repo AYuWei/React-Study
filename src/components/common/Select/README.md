@@ -17,5 +17,5 @@ datas = [
 ```
 
 2. name : 每一个多选宽的name属性值
-3. chooseDatas : 数组， 表示当前选中的value值
+3. chooseDatas : 字符串， 表示当前选中的value值
 4. onChange： 当选中项发生改变时的事件。

@@ -1,20 +1,23 @@
-import React from './node_modules/react'
+import React from 'react'
 import "./index.css"
-
-export default function ThreeLayout(props) {
-    const defaultProps = {
-        minWidth : 800,
-    }
-    const datas = Object.assign({},defaultProps, props);
-    
+import PropTypes from "prop-types"
+export default function TwoLayout(props) {
     return (
-        <div className="twolayout" style={{minWidth : datas.minWidth}}>
-            <div className="left" style={{width : datas.leftWidth}}>
+        <div className="twolayout" style={{minWidth : props.minWidth}}>
+            <div className="left" style={{width : props.leftWidth}}>
                 {props.LeftComtaner}
             </div>
-            <div className='right' style={{width : datas.rightWidth}}>
+            <div className='right' style={{width : props.rightWidth}}>
                 {props.RightComtaner}
             </div>
         </div>
     )
 }
+
+TwoLayout.defaultProps = {
+    minWidth : 800,
+ }
+ TwoLayout.propTypes = {
+    LeftComtaner : PropTypes.node,
+    RightComtaner : PropTypes.node,
+ }

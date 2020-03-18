@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from "prop-types"
+import utils from "./../../util"
 
 export default function Select(props) {
     const handleChange = (e) => {
@@ -27,4 +29,11 @@ export default function Select(props) {
             </select>
         </div>
     )
+}
+
+Select.propTypes = {
+    datas : utils.groupDatas,
+    name : PropTypes.string,
+    chooseDatas : PropTypes.string,
+    onChange : PropTypes.func,
 }

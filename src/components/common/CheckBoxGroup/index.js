@@ -1,4 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import utils from "./../../util"
+
+CheckBoxGroup.propTypes = {
+    datas : utils.groupDatas.isRequired,
+    name : PropTypes.string,
+    chooseDatas : utils.chooseDatas,
+}
 
 export default function CheckBoxGroup(props) {
     const handleChange = (e) => {
@@ -33,3 +41,4 @@ export default function CheckBoxGroup(props) {
         </div>
     )
 }
+
