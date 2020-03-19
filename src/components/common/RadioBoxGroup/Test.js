@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import RadioBox from "./index.js"
+import withDataGroup from "./../hoc/withDataGroup.js"
+// 经过高阶组件
+const ORadioBox = withDataGroup(RadioBox);
 
 export default class Test extends Component {
     state = {
@@ -18,7 +21,7 @@ export default class Test extends Component {
     render() {
         return (
             <div>
-                <RadioBox 
+                <ORadioBox 
                     datas={this.datas} 
                     name = "Radio"
                     {...this.state}

@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import CheckBox from "./index.js"
+import withDataGroup from "./../hoc/withDataGroup.js"
+// 经过高阶组件
+const OCheckBox = withDataGroup(CheckBox);
 
 export default class Test extends Component {
     state = {
@@ -16,10 +19,13 @@ export default class Test extends Component {
             chooseDatas : newArr
         })
     }
+
+    
+
     render() {
         return (
             <div>
-                <CheckBox 
+                <OCheckBox 
                     datas={this.datas} {...this.state}
                     onChange={this.onChange}
                 />

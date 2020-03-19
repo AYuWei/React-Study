@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import utils from "./../../util"
 
 CheckBoxGroup.propTypes = {
-    datas : utils.groupDatas.isRequired,
+    // datas : utils.groupDatas.isRequired,
     name : PropTypes.string,
     chooseDatas : utils.chooseDatas,
+    info : utils.singleData.isRequired,
 }
 
 export default function CheckBoxGroup(props) {
@@ -20,25 +21,33 @@ export default function CheckBoxGroup(props) {
     }
 
     var getCheckBoxes = () =>{
-         return props.datas.map(it => (
-             <label  key={it.value}>
-                 <input 
-                    type="checkbox" 
-                    name={props.name} 
-                    value={it.value}
-                    checked={props.chooseDatas.includes(it.value)}
-                    onChange={handleChange}
-                    />
-                 {it.text}
-             </label>
-         ))
+        //  return props.datas.map(it => (
+        //      <label  key={it.value}>
+        //          <input 
+        //             type="checkbox" 
+        //             name={props.name} 
+        //             value={it.value}
+        //             checked={props.chooseDatas.includes(it.value)}
+        //             onChange={handleChange}
+        //             />
+        //          {it.text}
+        //      </label>
+        //  ))
+
+        return (
+            <label>
+                <input 
+                   type="checkbox" 
+                   name={props.name} 
+                   value={props.info.value}
+                   checked={props.chooseDatas.includes(props.info.value)}
+                   onChange={handleChange}
+                   />
+                   {props.info.text}
+            </label>
+        )
     }
 
-    var bs = getCheckBoxes();
-    return (
-        <div>
-            {bs}
-        </div>
-    )
+    return getCheckBoxes();
 }
 
