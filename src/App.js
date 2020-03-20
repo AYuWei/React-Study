@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import Select from "./components/common/Select/Test.js"
+import RefIndex from "./components/ref/RefIndex.js"
 
 export default class App extends Component {
 
     render() {
         return (
            <>
-              <Select/>
+              <RefIndex/>
            </>
         )
     }
