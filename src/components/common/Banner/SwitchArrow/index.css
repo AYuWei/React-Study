@@ -1,0 +1,41 @@
+.arrow{
+    display: none;
+}
+
+.bander-wrapper:hover .arrow{
+    display: block;
+}
+
+.arrow {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    height: 25px;
+    transform:  translateY(-50%);
+    cursor: pointer;
+    line-height: 25px;
+}
+.arrow .arrowLeft,
+.arrow .arrowRight{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 600;
+}
+.arrow .arrowLeft{
+    left: 0px;
+    border-radius: 0px 50% 50% 0px;
+    padding-left: 4px;
+}
+.arrow .arrowRight {
+    border-radius:50%  0px  0px  50%;
+    right : 0px;
+    padding-left: 7px;
+}
+.arrow .item:hover{
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+}   

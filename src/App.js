@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import RefIndex from "./components/ref/RefIndex.js"
+import Bander from "./components/common/Banner/test.js"
 
 export default class App extends Component {
 
     render() {
         return (
            <>
-              <RefIndex/>
+              <Bander/>
            </>
         )
     }
