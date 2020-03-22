@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import Ocontext from './components/context'
+import Form from './components/Form/text.js'
 
 export default class App extends Component {
 
     render() {
         return (
            <>
-              <Ocontext />
+              <Form />
            </>
         )
     }
