@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import Form from './components/Form/text.js'
+import PureComponent from "./components/PureComponent/text.js"
 
 export default class App extends Component {
 
     render() {
         return (
            <>
-              <Form />
+              <PureComponent />
            </>
         )
     }
