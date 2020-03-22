@@ -1,0 +1,15 @@
+.point{
+    width: 500px;
+    height: 500px;
+    background-color: silver;
+    position: relative;
+    margin: 0px auto;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.point .move{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: tan;
+}
