@@ -1,50 +1,58 @@
-###  Portals
+###  错误边界
 
-插槽：将一个React元素渲染到指定的DOM容器中
+默认情况下,若一个组件在**渲染期间**（render）发生了错误，会导致整个组件树全部被卸载。
 
-ReactDOM.createPortal(React元素，真实的DOM容器)，该函数返回一个React元素。
+错误边界：是一个组件，该组件会捕获到渲染期间（render）子组件发生的错误，并有能力组织错误继续传播。
 
-**注意事件冒泡**
+**让某个组件捕获错误**
 
-1. React中的事件是包装过的。
+1. 编写生命周期函数：getDerivedStateFromError
+    - 静态函数
+    - 运行时间点：渲染子组件的过程中，发生错误之后，在更新页面之前。
+    - 该函数会返回一个对象，**React会将该对象的属性覆盖掉当前组件的state**。
+    - 参数：错误对象
+    - 通常，该函数用于改变状态
 
-2. 它的事件冒泡是根据虚拟DOM树来冒泡的，与真实的DOM树无关。
+2. 编写生命周期函数componentDidCatch
+    - 实例方法
+    - 运行时间节点：渲染子组件的过程中，发生错误，更新页面之后，由于其运行时间点比较后，因此不会在函数中改变状态值。
+    - 通常，该函数用于记录错误信息
 
--------------------
-就如插槽改变来渲染的位置，但是React树中，还是这样的层级结构的。
-```js
-import React, { Component } from 'react'
-import ReactDOM from "react-dom"
-// 组页面上还有一个id为move的div
+**细节**
 
-function PorA(){
-    return (<div>
-        <h1>我是PorA组件</h1>
-        <PorB />
-    </div>)
-}
-function PorB(){
-    return ReactDOM.createPortal(
-        <div className="moudal" style={{
-            position:"absolute",
-            backgroundColor : "rgba(0,0,0,0.3)",
-            width : "100%",
-            top : '60px',
-            left : "0px",
+某些错误，错误边界组件无法捕获
     
-            height : "100%"
-        }}>
-            <h1>我是PorB组件</h1>
-        </div>, document.querySelector('.move')
-    )
+- 自身的错误。
+- 异步的错误。
+- 事件的中的错误。
+
+总结：仅处理渲染子组件期间的异步错误。
+
+-------------------------
+正常结构
+```js
+import React, { PureComponent } from 'react'
+import Error from "./index"
+
+function ComA(){
+    return (<>
+        <h3>我是ComA组件！</h3>
+        <ComB />
+    </>)
+}
+class ComB extends PureComponent{
+    render(){
+        return (<>
+            <h4>我是ComB组件！</h4>
+        </>)
+    }
 }
 
-
-export default class Portals extends Component {
+export default class Test extends PureComponent {
     render() {
         return (
             <div>
-                <PorA />
+                <ComA />
             </div>
         )
     }
@@ -52,41 +60,101 @@ export default class Portals extends Component {
 
 ```
 
-当点击B组件时候，点击事件也会被触发，虽然页面结构改变了，但是，react树没变。是港剧react树来冒泡的。
+制造错误,则会导致整个组件树崩溃，因为处理不了，则下面我用使用边界处理。
+
 ```js
-import React, { Component } from 'react'
-import ReactDOM from "react-dom"
-// 组页面上还有一个id为move的div
+import React, { PureComponent } from 'react'
+import Error from "./index"
 
-function PorA(){
-    return (<div>
-        <h1>我是PorA组件</h1>
-        <PorB />
-    </div>)
+function ComA(){
+    return (<>
+        <h3>我是ComA组件！</h3>
+        <ComB />
+    </>)
 }
-function PorB(){
-    return ReactDOM.createPortal(
-        <div className="moudal" style={{
-            position:"absolute",
-            backgroundColor : "rgba(0,0,0,0.3)",
-            width : "100%",
-            top : '60px',
-            left : "0px",
-            height : "100%"
-        }}>
-            <h1>我是PorB组件</h1>
-        </div>, document.querySelector('.move')
-    )
+function getData(){
+    return ;
+}
+class ComB extends PureComponent{
+    render(){
+        const data = this.getData().map(ele => <span key={ele}>{ele}</span>)
+        return (<>
+            <h4>我是ComB组件！</h4>
+        </>)
+    }
 }
 
-
-export default class Portals extends Component {
+export default class Test extends PureComponent {
     render() {
         return (
-            <div  onClick={e=>{
-                console.log("我被点击了", e.target)
-            }}>
-                <PorA />
+            <div>
+                <ComA />
+            </div>
+        )
+    }
+}
+
+```
+
+index.js 错误处理
+```js
+import React, { Component } from 'react'
+
+export default class Error extends Component {
+    state = {
+        handerError : false,
+    }
+    static getDerivedStateFromError(err){
+        console.log('发生了错误',err)
+        return {
+            handerError : true,
+        }
+    }
+     componentDidCatch(err,info ){
+        console.log("记录错误信息。")
+    }
+    render() {
+        return (
+            <>
+                { this.state.handerError ? <p>艾若伟，发生错误了！</p> : this.props.children}
+            </>
+        )
+    }
+}
+
+```
+
+test使用
+```js
+import React, { PureComponent } from 'react'
+import ErrorBound from "./index"
+
+function ComA(){
+    return (<>
+        <h3>我是ComA组件！</h3>
+        <ErrorBound>
+            <ComB/>
+        </ErrorBound>
+    </>)
+}
+function getData(){
+    return ;
+}
+
+class ComB extends PureComponent{
+    render(){
+        const data = this.getData().map(ele => <span key={ele}>{ele}</span>)
+        return (<>
+            <h4>我是ComB组件！</h4>
+        </>)
+    }
+}
+
+export default class Test extends PureComponent {
+    render() {
+        return (
+            <div>
+                <ComA />
             </div>
         )
     }

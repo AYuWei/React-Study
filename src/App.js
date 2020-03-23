@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import Portals from "./components/Portals"
+import ErrorBound from "./components/ErrorBound/test.js"
 
 export default class App extends Component {
 
     render() {
         return (
            <>
-              <Portals />
+              <ErrorBound />
            </>
         )
     }
