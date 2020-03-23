@@ -1,163 +1,82 @@
-###  错误边界
+###  React中的事件
 
-默认情况下,若一个组件在**渲染期间**（render）发生了错误，会导致整个组件树全部被卸载。
+这里的事件：React内置的DOM组件中事件
 
-错误边界：是一个组件，该组件会捕获到渲染期间（render）子组件发生的错误，并有能力组织错误继续传播。
+1. 给document注册事件
+2. 几乎所有的元素的事件处理，均在document的事件中处理。
+    - 一些不冒泡的事件，是直接在元素上监听的。
+    - 一些document上没有的事件，直接在元素上监听。
 
-**让某个组件捕获错误**
+3. 在document的事件处理，React会根据虚拟DOM树的完成事件函数的调用。
+4. React的事件参数：并非真实的DOM事件参数，是React合成的一个对象，该对象类似于真实DOM的事件参数。
+    - stopPropagation，阻止事件在虚拟DOM树中冒泡
+    - nativeEvent,可以得到真实的DOM事件对象。
+    - 为了提高执行效率，React使用事件对象池来处理事件对象。
 
-1. 编写生命周期函数：getDerivedStateFromError
-    - 静态函数
-    - 运行时间点：渲染子组件的过程中，发生错误之后，在更新页面之前。
-    - 该函数会返回一个对象，**React会将该对象的属性覆盖掉当前组件的state**。
-    - 参数：错误对象
-    - 通常，该函数用于改变状态
+所有的事件都提出在document中存放。首先触发document原生的事件，然后在触发相应的react事件。
 
-2. 编写生命周期函数componentDidCatch
-    - 实例方法
-    - 运行时间节点：渲染子组件的过程中，发生错误，更新页面之后，由于其运行时间点比较后，因此不会在函数中改变状态值。
-    - 通常，该函数用于记录错误信息
+**注意事项**
 
-**细节**
+1. 如果给真实的DOM注册事件，阻止了事件冒泡，则会导致React的相应的事件无法触发。
+2. 如果给正式的DOM注册事件，事件会先于React事件运行。
+3. 如果React的事件中阻止事件冒泡，无法阻止真实的DOM事件冒泡。
+4. 可以通过nativeEvent.stopImmediatePropagation(),阻止document上剩余的执行。
+5. 在事件处理程序中，不要异步的使用事件对象，如果一定要使用，需要调用persist函数。强行保留事件对象。
 
-某些错误，错误边界组件无法捕获
-    
-- 自身的错误。
-- 异步的错误。
-- 事件的中的错误。
-
-总结：仅处理渲染子组件期间的异步错误。
-
--------------------------
-正常结构
-```js
-import React, { PureComponent } from 'react'
-import Error from "./index"
-
-function ComA(){
-    return (<>
-        <h3>我是ComA组件！</h3>
-        <ComB />
-    </>)
-}
-class ComB extends PureComponent{
-    render(){
-        return (<>
-            <h4>我是ComB组件！</h4>
-        </>)
-    }
-}
-
-export default class Test extends PureComponent {
-    render() {
-        return (
-            <div>
-                <ComA />
-            </div>
-        )
-    }
-}
-
-```
-
-制造错误,则会导致整个组件树崩溃，因为处理不了，则下面我用使用边界处理。
-
-```js
-import React, { PureComponent } from 'react'
-import Error from "./index"
-
-function ComA(){
-    return (<>
-        <h3>我是ComA组件！</h3>
-        <ComB />
-    </>)
-}
-function getData(){
-    return ;
-}
-class ComB extends PureComponent{
-    render(){
-        const data = this.getData().map(ele => <span key={ele}>{ele}</span>)
-        return (<>
-            <h4>我是ComB组件！</h4>
-        </>)
-    }
-}
-
-export default class Test extends PureComponent {
-    render() {
-        return (
-            <div>
-                <ComA />
-            </div>
-        )
-    }
-}
-
-```
-
-index.js 错误处理
+------------------------------------------
+APP.js
 ```js
 import React, { Component } from 'react'
 
-export default class Error extends Component {
-    state = {
-        handerError : false,
-    }
-    static getDerivedStateFromError(err){
-        console.log('发生了错误',err)
-        return {
-            handerError : true,
-        }
-    }
-     componentDidCatch(err,info ){
-        console.log("记录错误信息。")
-    }
+var isE ;
+function CompA(){
+   
+    return (
+        <div>
+            <h6 onClick={(e)=>{
+                console.log(e === isE); // 判断为true
+                console.log("我是h6中的点击事件！！！")
+            }}>我是CompA中的h6元素
+                <span onClick={(e)=>{
+                     isE = e;
+                    //  e.stopPropagation(); // 只是阻止了往上冒泡
+                    console.log("我是span元素")
+                    e.persist(); // 强制保留事件e参数，
+                    setTimeout(()=>{
+                        console.log(e.type)
+                    },1000)
+
+                }}>  =======我是span元素</span>
+            </h6>
+        </div>
+    )
+}
+
+export default class App extends Component {
     render() {
         return (
-            <>
-                { this.state.handerError ? <p>艾若伟，发生错误了！</p> : this.props.children}
-            </>
+           <div >
+               <p>我是App中的P元素！</p>
+               <CompA />
+           </div>
         )
     }
 }
 
 ```
 
-test使用
+index.js
 ```js
-import React, { PureComponent } from 'react'
-import ErrorBound from "./index"
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App.js"
 
-function ComA(){
-    return (<>
-        <h3>我是ComA组件！</h3>
-        <ErrorBound>
-            <ComB/>
-        </ErrorBound>
-    </>)
-}
-function getData(){
-    return ;
-}
+ReactDOM.render(<>
+    <App />
+</> , document.getElementById('root'))
 
-class ComB extends PureComponent{
-    render(){
-        const data = this.getData().map(ele => <span key={ele}>{ele}</span>)
-        return (<>
-            <h4>我是ComB组件！</h4>
-        </>)
-    }
-}
-
-export default class Test extends PureComponent {
-    render() {
-        return (
-            <div>
-                <ComA />
-            </div>
-        )
-    }
-}
-
+document.getElementById('root').addEventListener('click',(e)=>{
+    console.log('我是元素的click事件')
+    //e.stopPropagation(); // 阻止事件冒泡，react元素的事件不会被触发
+})
 ```

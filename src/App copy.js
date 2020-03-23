@@ -11,13 +11,7 @@ function CompA(){
             }}>我是CompA中的h6元素
                 <span onClick={(e)=>{
                      isE = e;
-                    //  e.stopPropagation(); // 只是阻止了往上冒泡
                     console.log("我是span元素")
-                    e.persist(); // 强制保留事件e参数，
-                    setTimeout(()=>{
-                        console.log(e.type)
-                    },1000)
-
                 }}>  =======我是span元素</span>
             </h6>
         </div>
