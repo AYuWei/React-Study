@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
 export default function App() {
-    const [n, setN] = useState(10)
+    const [n, setN] = useState(0)
     useEffect(() => {
-        if (n === 0) {
-            return;
-        }
-        //某一次渲染完成后，需要根据当前n的值，1秒后重新渲染
         setTimeout(() => {
-            setN(n - 1);
-        }, 1000)
-    }, [n])
+            console.log(n); //n指向，当前App函数调用时的n
+        }, 0);
+    })
     return (
         <div>
             <h1>{n}</h1>

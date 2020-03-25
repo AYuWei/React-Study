@@ -1,45 +1,59 @@
-### State Hook
+### Effect Hook
 
-State Hook是一各在函数组件中使用的函数（useState）,用于在函数组件中使用状态。
+Effect Hook: 用于在函数组件中处理副作用。
 
-useState
+什么是没有副作用的？就如纯函数就没有副作用，什么是纯函数，就是只管理组件组件内的事情。可以用pureComponent替换React.Component就变成一个纯函数了。
 
-- 函数有一个参数，这个参数的值表示状态的默认值。
-- 函数的返回值是一个数组，该数组一定包含两项。
-  - 第一项：当前状态的值。
-  - 第二项：改变状态的函数
+**副作用**
 
-一个函数组件中可以有多个状态，这种做法非常有利于横向切分关注点。
+1. ajax请求
+2. 计时器
+3. 其他异步操作。
+4. 更改真实的DOM对象（不建议直接改真实的DOM对象）
+5. 本地存储
+6. 其他会对外部参生影响的操作。
 
-**注意的细节**
- 
-1. useState最好写到函数的起始位置，便于阅读。
-2. useState严禁出现在代码块（判断，循环）中。(因为当第N次调用useState,检查该节点的状态数组是否存在下标N，不存在，使用默认值创建一个状态，将该状态加入到状态数组中，下标N)
-3. useState返回的函数（数组的第二项），引用不变（节省内存空间）
-4. 使用函数改变数据，若数据和之前的数据完全相等（使用Object.is比较），不会导致重新渲染，以达到优化效率的目的。
-5. 使用函数改变数据，传入的值不会和原来的数据进行合并，而是直接替换。
-6. 如果要实现强调刷新组件
-  - 类组件：使用forceUpdate函数。
-  - 函数组件: 使用一个空对象的useState
-7. **如果某些状态之间没有必然的联系，应该分为不同的状态，而不是和并成一个对象。**
-8. 和类组件的状态一样，函数组件中改变状态可能是异步的（在DOM事件中国），多个状态变化会合并以提高效率，此时，不能信任之前的状态，而应该使用回调函数的方式改变状态。如果状态变化要使用到之前的状态，尽量传递函数。
+函数：useEffect,该函数接收一个函数作为参数，接收的函数就是需要进行副作用操作的函数。
 
+**细节**
 
----------------------------
-简单的实例
+1. 副作用函数的运行时间点，是在页面完成真实的UI渲染之后，因此它的执行时异步的，并且不会阻塞游览器
+  - 与累组件中的componentDidMount 和 componentDidUpdate的区别。
+  - componentDidMount 和 componenetDidUpdate，更改了真实DOM，但是用户还没看到UI更新，同步的。
+  - useEffect中的副作用函数，更改了真实DOM，并且用户已经看到了UI更新，异步的。
+
+2. 每个函数组件中，可以多次使用useEffect，**但不要放入判断或循环等代码块中**。
+
+3. useEffect中的副作用函数，可以有返回值，返回值必须是一个函数，该函数叫做清理函数。
+  - 该函数运行时间点，在每次运行副作用函数之前。
+  - 首次渲染不会运行。
+  - 组件被销毁时一定会运行（在这里可以清楚计时器之类的东西）。
+
+4. useEffect函数：可以传递第二个参数
+  - 第二个参数是一个数组。
+  - 数组中记录该副作用的**依赖数据**。
+  - 当组件重新渲染后，只有**依赖数据**与上次不一样的时，才会执行副作用。
+  - 所以，当传递了依赖数据之后，如果数据没有发生变化。
+    - 副作用函数仅在第一次渲染后运行。
+    - 清理函数仅在卸载组建后运行。
+
+5. 副作用函数中，如果使用了函数是上下文中的变量，则由于闭包的影响，会导致副作用函数中的变量不会实时变化。
+
+6. 副作用函数在每次注册时，会覆盖掉之前的副作用函数，因此，尽量保持副作用函数稳定，否则控制起来会比较复杂。
+
+-----------------
+一个点单的副作用使用
 ```js
-import React ,{ useState } from 'react'
+import React,{useState, useEffect} from 'react'
 
 export default function App() {
-    // const n = useState(0)
-    // const N = n[0];
-    // const setN = n[1];
-    const [N, setN] = useState(0)
+    const [N, setN] = useState(0);
+    useEffect(()=>{
+        console.log("使用：副作用")
+        document.title=N;
+    })
     return (
         <div>
-            <button onClick={()=>{
-                N >0 && setN(N - 1)
-            }}>-</button>
             <span>{N}</span>
             <button onClick={()=>{
                 setN(N + 1)
@@ -49,49 +63,58 @@ export default function App() {
 }
 ```
 
+具有依赖项
 ```js
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+
+function Test() {
+    useEffect(() => {
+        console.log("副作用函数，仅挂载时运行一次")
+        return () => {
+            console.log("清理函数，仅卸载时运行一次")
+        };
+    },[]); //使用空数组作为依赖项，则副作用函数仅在挂载的时候运行
+    console.log("渲染组件");
+    const [, forceUpdate] = useState({})
+
+    return <h1>Test组件 <button onClick={() => {
+        forceUpdate({})
+    }}>刷新组件</button></h1>
+}
 
 export default function App() {
     const [visible, setVisible] = useState(true)
-    const [N, setN] = useState(0)
     return (
         <div>
-            <p style={{display: visible ? 'block' : "none"}}>
-                <button onClick={() => {
-                    N > 0 && setN(N - 1)
-                }}>-</button>
-                <span>{N}</span>
-                <button onClick={() => {
-                    setN(N + 1)
-                }}>+</button>
-            </p>
-            <button onClick={()=>{
-                setVisible(!visible)
+            {
+                visible && <Test />
+            }
+            <button onClick={() => {
+                setVisible(!visible);
             }}>显示/隐藏</button>
+
         </div>
     )
 }
-
-``` 
+```
 
 ```js
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 export default function App() {
-    const [N, setN] = useState(0)
+    const [n, setN] = useState(0)
+    useEffect(() => {
+        setTimeout(() => {
+            console.log(n); //n指向，当前App函数调用时的n
+        }, 0);
+    })
     return (
         <div>
-             <button onClick={() => {
-                    N > 0 && setN(N - 1)
-                }}>-</button>
-                <span>{N}</span>
-                <button onClick={() => {
-                    setN(parent => parent + 1)
-                    setN(parent => parent + 1)
-                }}>+</button>
+            <h1>{n}</h1>
+            <button onClick={() => {
+                setN(n + 1);
+            }}>n+1</button>
         </div>
     )
 }
-
 ```
