@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
 
-window.arr = [];
 export default function App() {
+    const [visible, setVisible] = useState(true)
     const [N, setN] = useState(0)
     return (
         <div>
-             <button onClick={() => {
+            <p style={{display: visible ? 'block' : "none"}}>
+                <button onClick={() => {
                     N > 0 && setN(N - 1)
                 }}>-</button>
                 <span>{N}</span>
                 <button onClick={() => {
-                    window.arr.push(setN)
+                    setN(N + 1)
                 }}>+</button>
+            </p>
+            <button onClick={()=>{
+                setVisible(!visible)
+            }}>显示/隐藏</button>
         </div>
     )
 }
